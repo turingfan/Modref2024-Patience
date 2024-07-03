@@ -1,4 +1,4 @@
-# constraint model explination
+# constraint model explanation
 
 ## Input variables
 
@@ -32,11 +32,11 @@ As time is clearly continuous, some level of granularity is needed to encode
 time as an integer. We decided on a granularity of 0.1 seconds, as a middle ground
 between the precsion of the resulting schedule and the time taken for a solver to
 find said schedule.
-The maximum possible par10 score is derrived from this time limit.
+The maximum possible PAR10 score is derrived from this time limit.
 
 ```essenceprime
 given timeLimit : int(..)
-letting par10Limit be timeLimit * 10
+letting PAR10Limit be timeLimit * 10
 ```
 
 Three domains are derrived from the above variables, __INSTANCES__, representing integer encodings
@@ -62,7 +62,7 @@ where duplicated algorithms share an integer encoding, or _reference_.
 given algorithmRef : matrix indexed by [ ALGORITHMS ] of ALGORITHMS
 ```
 
-## Decision varaibles
+## Decision variables
 
 Two vectors of decision variables are used to encode the
 resulting optimal schedule. __order__ represents the order each algorithm
@@ -85,18 +85,18 @@ allDiff(order),
 timeLimit = sum(timePortion),
 ```
 
-The par10 score for the resulting schedule is stored in an
-integer decision variable __par10__, which is minimised using
+The PAR10 score for the resulting schedule is stored in an
+integer decision variable __PAR10__, which is minimised using
 the __minimising__ objective.
 
 ```essenceprime
-find par10 : int(0..par10Limit * numAlgorithms * numInstances)
-minimising par10
+find PAR10 : int(0..PAR10Limit * numAlgorithms * numInstances)
+minimising PAR10
 ```
 
-### Auxilliary variables for par10 calculation
+### Auxilliary variables for PAR10 calculation
 
-In order to calculate the total par10 time for the training instance set,
+In order to calculate the total PAR10 time for the training instance set,
 we make use of four auxilliary vectors; __leftoverTime__, __hasResult__, 
 __minSolvableAlgorithm__ and __executionTime__.
 
@@ -224,11 +224,11 @@ forAll instance : INSTANCES .
     ),
 ```
 
-The __executionTime__ one dimensional vector contains the par10 scores for each
+The __executionTime__ one dimensional vector contains the PAR10 scores for each
 instance, calculated using the three auxilliary variables above. This is again
 split into two cases, if the schedule can find a certain result for an instance
-or not. In the latter case, the par10 score for that instance is the maximum possible
-par10 score (_par10Limit_). 
+or not. In the latter case, the PAR10 score for that instance is the maximum possible
+PAR10 score (_PAR10Limit_). 
 In the former case, the total instance execution time is the sum of the time each
 algorithm with an order earlier than the _minSolvableAlgorithm_ for that instance
 executed for. The lastmost algorithm is again separated here due to the
@@ -237,16 +237,16 @@ possibility for it to exceed the _timePortion_ variable.
 Boolean expressions were used to "filter" elements from the `sum` constraint.
 These are equated to 1 if true, and 0 if false.
 
-The total _par10_ score can then be constrained to the sum of the
+The total _PAR10_ score can then be constrained to the sum of the
 _executionTime_ vector.
 
 ```essenceprime
-find executionTime : matrix indexed by [ INSTANCES ] of int(0..par10Limit)
+find executionTime : matrix indexed by [ INSTANCES ] of int(0..PAR10Limit)
 
-$ find the par10 times for each instance
+$ find the PAR10 times for each instance
 forAll instance : INSTANCES .
     !hasResult[instance] -> (
-        executionTime[instance] = par10Limit
+        executionTime[instance] = PAR10Limit
     ),
 forall instance : INSTANCES .
     hasResult[instance] -> (
@@ -266,7 +266,7 @@ forall instance : INSTANCES .
     ),
 
 $ channelling execution times into objective variable
-par10 = sum(executionTime),
+PAR10 = sum(executionTime),
 ```
 
 ## timePortion granularity
