@@ -1,0 +1,7 @@
+.MINION*
+*.info
+*.fzn
+*.infor
+*.minion
+__pycache__/
+

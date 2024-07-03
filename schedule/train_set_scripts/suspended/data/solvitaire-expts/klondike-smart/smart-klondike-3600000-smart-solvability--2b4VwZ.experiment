@@ -1,0 +1,6 @@
+CL: ./solvability-start.sh 0 10000 32 30G solvitaire --type klondike --timeout 3600000 --str smart-solvability /work/sc122/sc122/shared/solvitaire-expts/klondike-smart/smart-klondike-3600000-smart-solvability-
+Host: r2i2n0: 
+StartDate:  Sat May 18 15:24:39 BST 2024
+Attempted Seed, Outcome, Time Taken(ms), States Searched, Unique States Searched, Backtracks, Dominance Moves, States Removed From Cache, Final States In Cache, Final Buckets In Cache, Maximum Search Depth, Final Search Depth, real (time), user (time), sys (time) 
+MainRunEndDate:  Sat May 18 17:48:17 BST 2024
+EndDate:  Sat May 18 17:48:17 BST 2024

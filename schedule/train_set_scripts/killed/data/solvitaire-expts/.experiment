@@ -1,0 +1,12 @@
+CL: ./solvability-start-fileseeds.sh klondike-smart/smart-klondike-3600000-smart-solvability--2b4VwZ.failed.txt 2 30G solvitaire --type klondike --timeout 3600 --str smart-solvability /work/sc122/sc122/work/solvitaire-expts/klondike-smart/test-klondike-3600-smart-solvability
+Host: cirrus-login1: 
+StartDate:  Sat May 18 18:02:16 BST 2024
+Attempted Seed, Outcome, Time Taken(ms), States Searched, Unique States Searched, Backtracks, Dominance Moves, States Removed From Cache, Final States In Cache, Final Buckets In Cache, Maximum Search Depth, Final Search Depth, real (time), user (time), sys (time) 
+MainRunEndDate:  Sat May 18 18:02:21 BST 2024
+EndDate:  Sat May 18 18:02:22 BST 2024
+CL: ./solvability-start-fileseeds.sh full-klondike/full-klondike-klondike-3600000-none--wpgJlZ.unrun.txt 2 30G solvitaire --type klondike --timeout 360 --str none /work/sc122/sc122/work/solvitaire-expts/test/test-klondike-360-none
+Host: cirrus-login1: 
+StartDate:  Sat May 18 18:05:31 BST 2024
+Attempted Seed, Outcome, Time Taken(ms), States Searched, Unique States Searched, Backtracks, Dominance Moves, States Removed From Cache, Final States In Cache, Final Buckets In Cache, Maximum Search Depth, Final Search Depth, real (time), user (time), sys (time) 
+MainRunEndDate:  Sat May 18 18:05:33 BST 2024
+EndDate:  Sat May 18 18:05:34 BST 2024

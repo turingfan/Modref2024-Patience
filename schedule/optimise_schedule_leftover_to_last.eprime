@@ -1,0 +1,208 @@
+language ESSENCE' 1.0
+
+$ matrix indexes
+letting result be 1
+letting time be 2
+
+$ result encodings
+letting unknown be 2
+letting solved be 1
+letting unsolvable be 0
+
+given timeLimit : int(..)
+letting par10Limit be timeLimit * 10
+
+given data : matrix indexed by [ int(1..numInstances), int(1..numAlgorithms), int(1..2)] of int(0..)
+
+letting INSTANCES be domain int(1..numInstances)
+letting ALGORITHMS be domain int(1..numAlgorithms)
+letting TIME_LIMIT be domain int(0..timeLimit)
+
+given algorithmRef : matrix indexed by [ ALGORITHMS ] of ALGORITHMS
+
+find order : matrix indexed by [ ALGORITHMS ] of ALGORITHMS
+find timePortion : matrix indexed by [ ALGORITHMS ] of TIME_LIMIT
+find par10 : int(0..par10Limit * numAlgorithms * numInstances)
+
+find leftoverTime : matrix indexed by [ INSTANCES, ALGORITHMS ] of TIME_LIMIT
+find hasResult : matrix indexed by [ INSTANCES ] of bool
+find minSolvableAlgorithm : matrix indexed by [ INSTANCES ] of ALGORITHMS
+find executionTime : matrix indexed by [ INSTANCES ] of int(0..par10Limit)
+
+find maxNonZeroAlgorithm : ALGORITHMS
+
+minimising par10
+
+such that
+
+$ zero leftover time for timedout non-last algorithms
+forAll instance : INSTANCES .
+    forAll algorithm : ALGORITHMS .
+        order[algorithm] < numAlgorithms /\
+        data[instance, algorithm, time] > timePortion[algorithm] ->
+            leftoverTime[instance, algorithm] = 0,
+$ zero leftover time for last algorithms
+forAll instance : INSTANCES .
+    forAll algorithm : ALGORITHMS .
+        order[algorithm] = numAlgorithms ->
+            leftoverTime[instance, algorithm] = 0,
+$ calculate leftover time for non-timedout non-last algorithms
+forAll instance : INSTANCES .
+    forAll algorithm : ALGORITHMS .
+        order[algorithm] < numAlgorithms /\
+        data[instance, algorithm, time] <= timePortion[algorithm] ->
+        leftoverTime[instance, algorithm] = timePortion[algorithm] - data[instance, algorithm, time],
+
+allDiff(order),
+
+timeLimit = sum(timePortion),
+
+$ symmetry breaking duplicate algorithms
+forAll i : int(1..numAlgorithms - 1) . forAll j : int(i + 1..numAlgorithms) .
+    algorithmRef[i] = algorithmRef[j]
+    /\ timePortion[j] = 0 ->
+        timePortion[i] = 0,
+forAll i : int(1..numAlgorithms - 1) . forAll j : int(i + 1..numAlgorithms) .
+    algorithmRef[i] = algorithmRef[j] /\
+    timePortion[j] != 0 -> (
+        order[i] < order[j]
+        /\
+        timePortion[i] < timePortion[j]
+    ),
+
+$ symmetry breaking for 0 time algorithms
+forAll algorithm : ALGORITHMS .
+    timePortion[algorithm] = 0 -> (
+        !(exists otherAlgorithm : ALGORITHMS .
+            otherAlgorithm != algorithm
+            /\ algorithmRef[otherAlgorithm] != algorithmRef[algorithm]
+            /\ order[otherAlgorithm] < order[algorithm]
+            /\ timePortion[otherAlgorithm] > 0
+        )
+    ),
+
+$ find if the instance is solvable within the time limit
+forAll instance : INSTANCES .
+    hasResult[instance] = (
+        (
+            exists algorithm : ALGORITHMS . 
+                order[algorithm] < numAlgorithms
+                /\ data[instance, algorithm, result] != unknown
+                /\ data[instance, algorithm, time] <= timePortion[algorithm]
+        )
+        \/
+        (
+            exists algorithm : ALGORITHMS . 
+                order[algorithm] = numAlgorithms
+                /\ data[instance, algorithm, result] != unknown
+                /\ data[instance, algorithm, time] <= timePortion[algorithm] + sum(leftoverTime[instance, ..])
+        )
+    ),
+
+$ find the earliest solvable algorithm for each instance
+forAll instance : INSTANCES .
+    hasResult[instance] -> ( $ if the instance has a certain result
+        (
+            exists algorithm : ALGORITHMS .
+                order[algorithm] < numAlgorithms $ algorithm isn't last
+                /\ data[instance, algorithm, result] != unknown $ outcome is certain
+                /\ data[instance, algorithm, time] <= timePortion[algorithm] $ executes in less than the allocated time
+                /\ (!exists otherAlgorithm : ALGORITHMS . $ there doesn't exist another algorithm which
+                    order[otherAlgorithm] < order[algorithm] $ has a lower order
+                    /\ data[instance, otherAlgorithm, result] != unknown $ outcome is certain
+                    /\ data[instance, otherAlgorithm, time] <= timePortion[otherAlgorithm] $ executes in less than the allocated time
+                )
+                /\ minSolvableAlgorithm[instance] = algorithm $ assigning the algorithm to the auxilliary variable
+        )
+        \/
+        (
+            exists algorithm : ALGORITHMS .
+                order[algorithm] = numAlgorithms $ algorithm is last
+                /\ data[instance, algorithm, result] != unknown $ outcome is certain
+                /\ data[instance, algorithm, time] <= timePortion[algorithm] + sum(leftoverTime[instance, ..]) $ executes in less than the allocated time
+                /\ (!exists otherAlgorithm : ALGORITHMS . $ there doesn't exist another algorithm which
+                    order[otherAlgorithm] < order[algorithm] $ has a lower order
+                    /\ data[instance, otherAlgorithm, result] != unknown $ outcome is certain
+                    /\ data[instance, otherAlgorithm, time] <= timePortion[otherAlgorithm] $ executes in less than the allocated time
+                )
+                /\ minSolvableAlgorithm[instance] = algorithm $ assigning the algorithm to the auxilliary variable
+        )
+    ),
+
+$ find the par10 times for each instance
+forAll instance : INSTANCES .
+    !hasResult[instance] -> (
+        executionTime[instance] = par10Limit
+    ),
+forall instance : INSTANCES .
+    hasResult[instance] -> (
+        executionTime[instance] = (sum algorithm : ALGORITHMS .
+            (order[algorithm] <= order[minSolvableAlgorithm[instance]])
+            *
+            (order[algorithm] < numAlgorithms)
+            *
+            min(timePortion[algorithm], data[instance, algorithm, time])
+        )
+        +
+        (
+            (order[numAlgorithms] < order[minSolvableAlgorithm[instance]])
+            *
+            data[instance, numAlgorithms, time]
+        )
+    ),
+
+$ channelling execution times into objective variable
+par10 = sum(executionTime),
+
+$ $ logarithmic split times
+$ forAll algorithm : ALGORITHMS .
+$     timePortion[algorithm] != 0 -> 
+$         (
+$             exists pow10 : int(1..7) .
+$                 timePortion[algorithm] >= 10**(pow10 - 1)
+$                 /\ timePortion[algorithm] < 10**pow10
+$                 /\ (
+$                     timePortion[algorithm] % 10**(pow10 - 1) = 0
+$                 )
+$         ),
+
+$ pseudo-logarithmic split times
+forAll algorithm : ALGORITHMS .
+    algorithm != maxNonZeroAlgorithm /\
+    timePortion[algorithm] != 0 -> 
+        (
+            (
+                timePortion[algorithm] >= 100
+                /\ timePortion[algorithm] < 600
+                ->
+                    (
+                        timePortion[algorithm] % 10 = 0
+                    )
+            )
+            /\
+            (
+                timePortion[algorithm] >= 600
+                ->
+                    (
+                        timePortion[algorithm] % 100 = 0
+                    )
+            )
+        ),
+
+$ max non zero algorithm
+exists algorithm : ALGORITHMS .
+    maxNonZeroAlgorithm = algorithm
+    /\ timePortion[algorithm] != 0
+    /\ (!exists otherAlgorithm : ALGORITHMS .
+        timePortion[otherAlgorithm] != 0
+        /\ order[otherAlgorithm] > order[algorithm]
+    ),
+
+$ set timeout of last algorithm
+timePortion[maxNonZeroAlgorithm] = timeLimit - (
+    sum otherAlgorithm : ALGORITHMS .
+        (otherAlgorithm != maxNonZeroAlgorithm) *
+        timePortion[otherAlgorithm]
+),
+
+true
