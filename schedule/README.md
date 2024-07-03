@@ -38,3 +38,7 @@ to that solver/model.
 The [data](./data) directory must contain csv files with data for each solver.
 
 Requirements for these files can be found [here](./data/README.md).
+
+## Model explanation  
+
+A detailed explanation of the scheduling constraint model (used for generating the optimal constraint-based schedule of solvers) is available in `./docs/constraint_explination.md`
