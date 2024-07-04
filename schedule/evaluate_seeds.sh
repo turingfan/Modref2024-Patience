@@ -34,7 +34,7 @@ test -d $data_directory/$temp_directory || mkdir $data_directory/$temp_directory
 
 param_name="temp.param"
 
-./create_param_from_csv.py $data_directory/$temp_directory $param_name $granularity $timeout
+./create_param_from_csv.py $data_directory/$temp_directory $param_name $granularity $timeout > /dev/null
 
 savilerow $model $param_name -run-solver -solutions-to-stdout -chuffed -O1 2> /dev/null && cat $param_name.info 
 

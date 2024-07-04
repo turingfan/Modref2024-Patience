@@ -1,6 +1,0 @@
-CL: ./solvability-start.sh 0 10000 35 30G solvitaire --type klondike --timeout 3600000 --str both /work/sc122/sc122/ipg1/schedule-expts/streamliner/klondike-both-1hr-first10k-
-Host: r1i5n12: 
-StartDate:  Thu May 16 21:56:10 BST 2024
-Attempted Seed, Outcome, Time Taken(ms), States Searched, Unique States Searched, Backtracks, Dominance Moves, States Removed From Cache, Final States In Cache, Final Buckets In Cache, Maximum Search Depth, Final Search Depth, real (time), user (time), sys (time) 
-MainRunEndDate:  Thu May 16 22:33:36 BST 2024
-EndDate:  Thu May 16 22:33:36 BST 2024
