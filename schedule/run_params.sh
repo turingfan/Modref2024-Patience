@@ -34,13 +34,7 @@ for i in $(seq 12 2 28); do
     ./parse_results.sh $model $data_directory $seeds $total_seeds $i $granularity >> $csv
 done
 
-for i in $(seq 30 10 170); do
-    echo "Processing timeout $i"
-    echo -n "$i," >> $csv
-    ./parse_results.sh $model $data_directory $seeds $total_seeds $i $granularity >> $csv
-done
-
-for i in $(seq 180 60 3600); do
+for i in $(seq 30 10 120); do
     echo "Processing timeout $i"
     echo -n "$i," >> $csv
     ./parse_results.sh $model $data_directory $seeds $total_seeds $i $granularity >> $csv
