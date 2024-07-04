@@ -1,4 +1,0 @@
-CL: ./solvability-start-fileseeds.sh klondike-smart/smart-klondike-3600000-smart-solvability--2b4VwZ.failed.txt 10 30G solvitaire --type klondike --timeout 3600000 --str smart-solvability /work/sc122/sc122/shared/solvitaire-expts/klondike-smart/smart-klondike-3600000-smart-solvability
-Host: r1i2n19: 
-StartDate:  Sat May 18 18:10:15 BST 2024
-Attempted Seed, Outcome, Time Taken(ms), States Searched, Unique States Searched, Backtracks, Dominance Moves, States Removed From Cache, Final States In Cache, Final Buckets In Cache, Maximum Search Depth, Final Search Depth, real (time), user (time), sys (time) 
