@@ -9,24 +9,25 @@ Attempts to learn a schedule for the provided models, using the PAR10 metric.
 
 ## Usage
 
-`./evaluate_seeds.sh <eprime model> <#seeds to use> <timeout (seconds)>`
+`./evaluate_seeds.sh <eprime model> <#seeds to use> <timeout (seconds)> <data directory>`
 
 Where:
 
 - `<eprime model>` is the constraint model to use,
-- `<#seeds to use>` is the number of seeds from the seed files to use
+- `<#seeds to use>` is the number of seeds from each seed file to use in the training set
 - `<timeout (seconds)>` is the total timeout to optimise for
+- `<data directory>` is the directory containing the data to optimise for
 
-For example, to find the optimal schedule for the first 1000 seeds in the data directory
+For example, to find the optimal schedule for the first 1000 seeds in the _data_ directory
 for a maximum timeout of 20 minutes, use:
 
 ```bash
-./evaluate_seeds.sh optimese_schedule.eprime 1000 1200
+./evaluate_seeds.sh optimese_schedule.eprime 1000 1200 data
 ```
 
-## Parsing output
+### Parsing output
 
-The first output line contains the names of the data files in the order they are passed into the model.
+The first output line contains the prefixes of the data files in the order they are passed into the model.
 
 The __order__ variable is the order each of these files should be processed.
 
